@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Dulce Cajita 🍬</title>
+<meta name="theme-color" content="#FF3E7F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#FF3E7F;
+    --yellow:#FFC93C;
+    --turquoise:#2EE6D6;
+    --purple:#7B4DFF;
+    --cream:#FFF6E9;
+    --plum:#2B1B4D;
+    --plum-soft:#5B4A7A;
+    --green:#3CCB6F;
+    --red:#FF5A5F;
+    --card-radius: 28px;
+    --shadow-hard: 0 8px 0 rgba(0,0,0,0.18);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0;padding:0;height:100%;
+    font-family:'Nunito',sans-serif;
+    background:var(--cream);
+    color:var(--plum);
+    overflow-x:hidden;
+    -webkit-user-select:none;user-select:none;
+  }
+  body{
+    background-image:
+      radial-gradient(circle at 8% 12%, rgba(255,201,60,0.35) 0, transparent 40%),
+      radial-gradient(circle at 92% 18%, rgba(46,230,214,0.30) 0, transparent 38%),
+      radial-gradient(circle at 15% 90%, rgba(123,77,255,0.22) 0, transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(255,62,127,0.20) 0, transparent 42%);
+    min-height:100vh;
+    display:flex;flex-direction:column;
+  }
+  h1,h2,h3,button{font-family:'Baloo 2',sans-serif;}
+  .screen{display:none;flex:1;flex-direction:column;padding:18px 16px 90px;max-width:520px;margin:0 auto;width:100%;}
+  .screen.active{display:flex;animation:fadeUp .45s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- MENU ---------- */
+  #box-lid{
+    position:fixed;inset:0;z-index:999;
+    background:linear-gradient(135deg,var(--pink),var(--purple));
+    display:flex;align-items:center;justify-content:center;
+    flex-direction:column;color:#fff;text-align:center;
+    cursor:pointer;border:none;width:100%;
+    padding:0;
+  }
+  #box-lid.closing{animation:lidClose .7s ease forwards;}
+  #box-lid .emoji{font-size:72px;animation:pop 1.1s ease infinite;}
+  #box-lid p{font-family:'Baloo 2';font-size:22px;font-weight:700;margin-top:10px;letter-spacing:.5px;}
+  #box-lid span.tap-hint{
+    margin-top:16px;background:rgba(255,255,255,0.22);padding:8px 20px;border-radius:999px;
+    font-family:'Baloo 2';font-weight:700;font-size:14px;animation:pulseHint 1.4s ease infinite;
+  }
+  @keyframes pulseHint{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+  @keyframes pop{0%,100%{transform:scale(1) rotate(0deg);}50%{transform:scale(1.15) rotate(-6deg);}}
+  @keyframes lidClose{to{opacity:0;visibility:hidden;transform:scale(1.06);}}
+
+  .music-fab{
+    position:fixed;top:14px;right:14px;z-index:60;
+    background:#fff;border:none;border-radius:999px;
+    width:46px;height:46px;font-size:20px;
+    box-shadow:var(--shadow-hard);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .music-fab:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,0.18);}
+
+  .menu-header{text-align:center;padding:22px 6px 10px;}
+  .menu-header .eyebrow{
+    display:inline-block;background:var(--plum);color:#fff;
+    font-family:'Baloo 2';font-weight:700;font-size:13px;
+    padding:5px 14px;border-radius:999px;letter-spacing:1px;
+    transform:rotate(-2deg);
+  }
+  .menu-header h1{
+    font-size:34px;line-height:1.05;margin:14px 0 4px;color:var(--plum);
+    text-shadow:3px 3px 0 var(--yellow);
+  }
+  .menu-header p{margin:0;color:var(--plum-soft);font-weight:700;font-size:15px;}
+
+  .game-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;
+  }
+  .game-btn{
+    border:none;border-radius:var(--card-radius);
+    padding:0;cursor:pointer;position:relative;overflow:hidden;
+    aspect-ratio:1/1.02;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#fff;text-align:center;
+    box-shadow:var(--shadow-hard);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .game-btn:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,0.18);}
+  .game-btn .icon{font-size:46px;margin-bottom:6px;filter:drop-shadow(0 3px 0 rgba(0,0,0,0.15));}
+  .game-btn .label{font-family:'Baloo 2';font-weight:800;font-size:16px;line-height:1.15;padding:0 8px;}
+  .game-btn .tag{
+    position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.28);
+    font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px;letter-spacing:.5px;
+  }
+  .g1{background:linear-gradient(160deg,#FF6F91,var(--pink));}
+  .g2{background:linear-gradient(160deg,#9E7CFF,var(--purple));}
+  .g3{background:linear-gradient(160deg,#3FE0D0,#17B8AE);}
+  .g4{background:linear-gradient(160deg,#FFDE72,#FFB13C);}
+
+  .menu-footer{margin-top:auto;text-align:center;padding-top:26px;color:var(--plum-soft);font-weight:700;font-size:13px;}
+  .menu-footer span{color:var(--pink);}
+
+  /* ---------- SHARED GAME CHROME ---------- */
+  .game-topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .game-title{font-size:20px;font-weight:800;margin:0;display:flex;align-items:center;gap:8px;}
+  .stat-pill{
+    background:#fff;border-radius:999px;padding:6px 14px;font-weight:800;
+    font-family:'Baloo 2';font-size:14px;box-shadow:var(--shadow-hard);
+    display:flex;gap:6px;align-items:center;
+  }
+  .stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+
+  .home-fab{
+    position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+    background:var(--plum);color:#fff;border:none;border-radius:999px;
+    padding:12px 26px;font-family:'Baloo 2';font-weight:700;font-size:15px;
+    box-shadow:0 6px 0 rgba(0,0,0,0.25);cursor:pointer;z-index:50;
+    display:flex;align-items:center;gap:8px;
+  }
+  .home-fab:active{transform:translateX(-50%) translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,0.25);}
+
+  .game-canvas-wrap{
+    position:relative;border-radius:24px;overflow:hidden;background:#fff;
+    box-shadow:var(--shadow-hard);flex:1;min-height:340px;
+    display:flex;align-items:center;justify-content:center;touch-action:none;
+  }
+  canvas{display:block;width:100%;height:100%;touch-action:none;}
+
+  .overlay-msg{
+    position:absolute;inset:0;background:rgba(43,27,77,0.86);color:#fff;
+    display:none;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;gap:14px;padding:20px;z-index:20;
+  }
+  .overlay-msg.show{display:flex;}
+  .overlay-msg h2{font-size:26px;margin:0;}
+  .overlay-msg p{margin:0;font-weight:700;color:#E9E1FF;}
+  .btn-primary{
+    background:var(--yellow);color:var(--plum);border:none;border-radius:999px;
+    padding:12px 26px;font-family:'Baloo 2';font-weight:800;font-size:16px;
+    cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,0.25);
+  }
+  .btn-primary:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,0.25);}
+
+  .hint{text-align:center;font-weight:700;color:var(--plum-soft);font-size:13px;margin-top:10px;}
+
+  /* ---------- MEMORY GAME ---------- */
+  .memory-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex:1;align-content:center;
+  }
+  .card{
+    aspect-ratio:1/1;border-radius:14px;background:linear-gradient(160deg,#9E7CFF,var(--purple));
+    display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;
+    box-shadow:0 4px 0 rgba(0,0,0,0.18);transition:transform .25s;
+    position:relative;
+  }
+  .card .face{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    backface-visibility:hidden;border-radius:14px;
+  }
+  .card .back{background:transparent;font-size:22px;color:#fff;}
+  .card .front{background:#fff;transform:rotateY(180deg);font-size:28px;}
+  .card{transform-style:preserve-3d;transition:transform .35s;}
+  .card.flipped{transform:rotateY(180deg);}
+  .card.matched{opacity:0.55;box-shadow:none;}
+
+  /* ---------- MAZE ---------- */
+  .maze-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+  .maze-grid{display:grid;gap:3px;background:var(--plum);padding:6px;border-radius:16px;box-shadow:var(--shadow-hard);}
+  .cell{width:26px;height:26px;border-radius:5px;background:#fff;}
+  .cell.wall{background:var(--plum);}
+  .cell.start{background:var(--turquoise);}
+  .cell.goal{background:var(--yellow);font-size:16px;display:flex;align-items:center;justify-content:center;}
+  .cell.player{background:var(--pink);font-size:15px;display:flex;align-items:center;justify-content:center;}
+  .dpad{display:grid;grid-template-columns:56px 56px 56px;grid-template-rows:56px 56px 56px;gap:6px;}
+  .dpad button{
+    border:none;border-radius:14px;background:#fff;box-shadow:var(--shadow-hard);
+    font-size:22px;cursor:pointer;
+  }
+  .dpad button:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,0.2);}
+  .dpad .up{grid-column:2;grid-row:1;}
+  .dpad .left{grid-column:1;grid-row:2;}
+  .dpad .center{grid-column:2;grid-row:2;background:var(--cream);}
+  .dpad .right{grid-column:3;grid-row:2;}
+  .dpad .down{grid-column:2;grid-row:3;}
+
+  .confetti-piece{
+    position:fixed;top:-10px;border-radius:2px;z-index:30;pointer-events:none;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:0.9;}}
+</style>
+</head>
+<body>
+
+<button id="box-lid" onclick="openBox()">
+  <div class="emoji">🍬</div>
+  <p>Dulce Cajita</p>
+  <span class="tap-hint">👆 ¡Toca para abrir!</span>
+</button>
+
+<button class="music-fab" id="music-fab" onclick="toggleMusic()" style="display:none;">🔊</button>
+
+<!-- ================= MENU ================= -->
+<section id="menu-screen" class="screen active">
+  <div class="menu-header">
+    <span class="eyebrow">🍭 DULCE CAJITA</span>
+    <h1>¡Elige tu juego!</h1>
+    <p>Toca una carita y ¡a divertirse! 🎉</p>
+  </div>
+
+  <div class="game-grid">
+    <button class="game-btn g1" onclick="goTo('racing')">
+      <span class="tag">01</span>
+      <span class="icon">🚗</span>
+      <span class="label">¡A Correr!</span>
+    </button>
+    <button class="game-btn g2" onclick="goTo('memory')">
+      <span class="tag">02</span>
+      <span class="icon">🧩</span>
+      <span class="label">Memoria loca</span>
+    </button>
+    <button class="game-btn g3" onclick="goTo('candy')">
+      <span class="tag">03</span>
+      <span class="icon">🍬</span>
+      <span class="label">Atrapa dulces</span>
+    </button>
+    <button class="game-btn g4" onclick="goTo('maze')">
+      <span class="tag">04</span>
+      <span class="icon">🌀</span>
+      <span class="label">El Laberinto</span>
+    </button>
+  </div>
+
+  <div class="menu-footer">Hecho con <span>&hearts;</span> para ti · ¡vuelve cuando quieras!</div>
+</section>
+
+<!-- ================= JUEGO 1: A CORRER ================= -->
+<section id="racing-screen" class="screen">
+  <div class="game-topbar">
+    <h2 class="game-title">🚗 ¡A Correr!</h2>
+    <div class="stat-pill" id="racing-score">⭐ 0</div>
+  </div>
+  <div class="game-canvas-wrap">
+    <canvas id="racing-canvas"></canvas>
+    <div class="overlay-msg" id="racing-overlay">
+      <h2>💥 ¡Choque!</h2>
+      <p id="racing-final">Puntaje: 0</p>
+      <button class="btn-primary" onclick="startRacing()">Jugar de nuevo</button>
+    </div>
+  </div>
+  <p class="hint">Desliza el dedo (o usa ← →) para esquivar los conos</p>
+</section>
+
+<!-- ================= JUEGO 2: MEMORIA LOCA ================= -->
+<section id="memory-screen" class="screen">
+  <div class="game-topbar">
+    <h2 class="game-title">🧩 Memoria loca</h2>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill" id="memory-moves">🔁 0 intentos</div>
+    <div class="stat-pill" id="memory-pairs">✅ 0/8</div>
+  </div>
+  <div class="memory-grid" id="memory-grid"></div>
+  <div class="overlay-msg" id="memory-overlay">
+    <h2>🎉 ¡Lo lograste!</h2>
+    <p id="memory-final">Intentos: 0</p>
+    <button class="btn-primary" onclick="startMemory()">Jugar de nuevo</button>
+  </div>
+  <p class="hint">Toca dos cartas y encuentra las parejas</p>
+</section>
+
+<!-- ================= JUEGO 3: ATRAPA DULCES ================= -->
+<section id="candy-screen" class="screen">
+  <div class="game-topbar">
+    <h2 class="game-title">🍬 Atrapa dulces</h2>
+    <div class="stat-pill" id="candy-score">⭐ 0</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill" id="candy-lives">❤️❤️❤️</div>
+  </div>
+  <div class="game-canvas-wrap">
+    <canvas id="candy-canvas"></canvas>
+    <div class="overlay-msg" id="candy-overlay">
+      <h2>😋 ¡Se acabaron los dulces!</h2>
+      <p id="candy-final">Puntaje: 0</p>
+      <button class="btn-primary" onclick="startCandy()">Jugar de nuevo</button>
+    </div>
+  </div>
+  <p class="hint">Mueve el dedo (o el mouse) para mover la canasta</p>
+</section>
+
+<!-- ================= JUEGO 4: EL LABERINTO ================= -->
+<section id="maze-screen" class="screen">
+  <div class="game-topbar">
+    <h2 class="game-title">🌀 El Laberinto</h2>
+    <div class="stat-pill" id="maze-level">🗺️ Nivel 1</div>
+  </div>
+  <div class="maze-wrap">
+    <div class="maze-grid" id="maze-grid"></div>
+    <div class="dpad">
+      <button class="up" onclick="moveMaze(0,-1)">⬆️</button>
+      <button class="left" onclick="moveMaze(-1,0)">⬅️</button>
+      <div class="center"></div>
+      <button class="right" onclick="moveMaze(1,0)">➡️</button>
+      <button class="down" onclick="moveMaze(0,1)">⬇️</button>
+    </div>
+  </div>
+  <div class="overlay-msg" id="maze-overlay">
+    <h2>🏆 ¡Tesoro encontrado!</h2>
+    <p id="maze-final">¡Muy bien hecho!</p>
+    <button class="btn-primary" onclick="nextMazeLevel()">Siguiente laberinto</button>
+  </div>
+  <p class="hint">Usa las flechas o desliza para mover a tu personaje 🧒 hasta el tesoro 🏆</p>
+</section>
+
+<button class="home-fab" id="home-fab" style="display:none;" onclick="goTo('menu')">🏠 Menú</button>
+
+<script>
+/* ============================================================
+   NAVEGACIÓN
+============================================================ */
+let currentScreen = 'menu';
+const loops = {}; // guarda referencias a requestAnimationFrame para poder cancelarlas
+
+function goTo(screen){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(screen+'-screen').classList.add('active');
+  document.getElementById('home-fab').style.display = screen==='menu' ? 'none' : 'flex';
+  currentScreen = screen;
+  stopAllLoops();
+  playTone(520,0.06);
+
+  if(screen==='racing') startRacing();
+  if(screen==='memory') startMemory();
+  if(screen==='candy') startCandy();
+  if(screen==='maze') startMaze();
+}
+
+function stopAllLoops(){
+  Object.keys(loops).forEach(k=>{ if(loops[k]) cancelAnimationFrame(loops[k]); loops[k]=null; });
+}
+
+/* ============================================================
+   SONIDO: efectos cortos + musiquita de fondo (todo generado,
+   sin archivos externos, para que funcione offline y en GitHub Pages)
+============================================================ */
+let audioCtx;
+function getCtx(){
+  audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+function playTone(freq=440, dur=0.08, type='sine', vol=0.06){
+  try{
+    const ctx = getCtx();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.value = vol;
+    o.connect(g); g.connect(ctx.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+dur);
+    o.stop(ctx.currentTime+dur);
+  }catch(e){}
+}
+
+/* --- Motor de música de fondo: melodía alegre estilo "cajita musical" --- */
+const NOTE = { C4:261.6,D4:293.7,E4:329.6,F4:349.2,G4:392.0,A4:440.0,B4:493.9,
+               C5:523.3,D5:587.3,E5:659.3,F5:698.5,G5:784.0,A5:880.0,
+               C3:130.8,F3:174.6,G3:196.0,A3:220.0 };
+// melodía alegre y saltarina (estilo caja de música / carnaval), 0 = silencio
+const MELODY = [
+  'E5','G5','C5', 0, 'D5','F5','A4', 0,
+  'E5','G5','C5', 0, 'G4','A4','G4', 0,
+  'F5','A5','D5', 0, 'E5','G5','C5', 0,
+  'G4','C5','E5', 0, 'D5','G4', 0, 0
+];
+const BASS = [
+  'C3',0,0,0, 'F3',0,0,0,
+  'C3',0,0,0, 'G3',0,0,0,
+  'F3',0,0,0, 'C3',0,0,0,
+  'A3',0,0,0, 'G3',0,0,0
+];
+const music = { playing:false, muted:false, step:0, timer:null, stepMs:190 };
+
+function musicStep(){
+  if(!music.playing) return;
+  const n = MELODY[music.step % MELODY.length];
+  const b = BASS[music.step % BASS.length];
+  if(!music.muted){
+    if(n) playTone(NOTE[n], 0.22, 'triangle', 0.05);
+    if(b) playTone(NOTE[b], 0.35, 'sine', 0.045);
+  }
+  music.step++;
+  music.timer = setTimeout(musicStep, music.stepMs);
+}
+function startMusic(){
+  if(music.playing) return;
+  music.playing = true;
+  musicStep();
+}
+function toggleMusic(){
+  music.muted = !music.muted;
+  document.getElementById('music-fab').textContent = music.muted ? '🔇' : '🔊';
+  playTone(600,0.05);
+}
+function confettiBurst(n=40){
+  const colors=['#FF3E7F','#FFC93C','#2EE6D6','#7B4DFF','#3CCB6F'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.left=Math.random()*100+'vw';
+    el.style.width=el.style.height=(6+Math.random()*6)+'px';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.animationDuration=(1.6+Math.random()*1.2)+'s';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),3000);
+  }
+}
+
+/* Abre la cajita cuando el niño toca la tapa: aquí arrancamos el audio
+   (los celulares solo permiten sonido después de un toque del usuario) */
+function openBox(){
+  try{ getCtx().resume(); }catch(e){}
+  playTone(784,0.12,'triangle',0.08);
+  setTimeout(()=>playTone(1046,0.18,'triangle',0.08), 120);
+  startMusic();
+  document.getElementById('music-fab').style.display = 'flex';
+  const lid = document.getElementById('box-lid');
+  lid.classList.add('closing');
+  lid.disabled = true;
+  setTimeout(()=>{ if(lid) lid.remove(); }, 700);
+}
+
+/* Reajusta canvases si cambia el tamaño de pantalla */
+window.addEventListener('resize', ()=>{
+  sizeCanvas(racingCanvas); sizeCanvas(candyCanvas);
+});
+function sizeCanvas(cv){
+  const rect = cv.parentElement.getBoundingClientRect();
+  cv.width = rect.width; cv.height = rect.height;
+}
+
+/* ============================================================
+   JUEGO 1: ¡A CORRER!  (esquivar conos)
+============================================================ */
+const racingCanvas = document.getElementById('racing-canvas');
+const rCtx = racingCanvas.getContext('2d');
+let racing;
+
+function startRacing(){
+  document.getElementById('racing-overlay').classList.remove('show');
+  sizeCanvas(racingCanvas);
+  racing = {
+    laneX: racingCanvas.width/2,
+    carW: 42, carH: 66,
+    obstacles: [],
+    speed: 4.2,
+    score: 0,
+    spawnTimer: 0,
+    alive: true,
+    roadOffset: 0
+  };
+  document.getElementById('racing-score').textContent = '⭐ 0';
+  loops.racing && cancelAnimationFrame(loops.racing);
+  racingLoop();
+}
+
+function racingLoop(){
+  if(currentScreen!=='racing') return;
+  const cv = racingCanvas, ctx = rCtx, w=cv.width, h=cv.height;
+  if(!racing.alive){ loops.racing = requestAnimationFrame(racingLoop); return; }
+
+  // fondo carretera
+  ctx.fillStyle = '#4a4a63';
+  ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = '#5c5c78';
+  ctx.fillRect(w*0.12,0,w*0.76,h);
+
+  // líneas de carril animadas
+  racing.roadOffset = (racing.roadOffset + racing.speed) % 40;
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+  ctx.lineWidth = 4;
+  ctx.setLineDash([18,16]);
+  ctx.lineDashOffset = -racing.roadOffset;
+  ctx.beginPath();
+  ctx.moveTo(w/2,0); ctx.lineTo(w/2,h);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // obstáculos
+  racing.spawnTimer -= 1;
+  if(racing.spawnTimer<=0){
+    racing.spawnTimer = Math.max(28, 60-racing.score);
+    const margin = w*0.18;
+    racing.obstacles.push({ x: margin + Math.random()*(w-margin*2-30), y:-40, size:34 });
+  }
+  ctx.font = '30px serif';
+  racing.obstacles.forEach(o=>{
+    o.y += racing.speed;
+    ctx.fillText('🚧', o.x, o.y);
+  });
+  racing.obstacles = racing.obstacles.filter(o=>o.y < h+40);
+
+  // auto del jugador
+  const carX = racing.laneX - racing.carW/2;
+  const carY = h - racing.carH - 18;
+  ctx.font = '46px serif';
+  ctx.fillText('🚗', carX-4, carY+50);
+
+  // colisiones
+  racing.obstacles.forEach(o=>{
+    const dx = Math.abs((o.x+15) - racing.laneX);
+    const dy = Math.abs((o.y-10) - (carY+25));
+    if(dx < 30 && dy < 34){ crashRacing(); }
+  });
+
+  racing.score += 0.02;
+  document.getElementById('racing-score').textContent = '⭐ '+Math.floor(racing.score);
+  racing.speed = Math.min(9, 4.2 + racing.score*0.03);
+
+  loops.racing = requestAnimationFrame(racingLoop);
+}
+
+function crashRacing(){
+  if(!racing.alive) return;
+  racing.alive = false;
+  playTone(160,0.3,'sawtooth');
+  document.getElementById('racing-final').textContent = 'Puntaje: '+Math.floor(racing.score);
+  document.getElementById('racing-overlay').classList.add('show');
+}
+
+// controles: teclado
+window.addEventListener('keydown', e=>{
+  if(currentScreen==='racing' && racing && racing.alive){
+    if(e.key==='ArrowLeft') racing.laneX = Math.max(40, racing.laneX-28);
+    if(e.key==='ArrowRight') racing.laneX = Math.min(racingCanvas.width-40, racing.laneX+28);
+  }
+});
+// controles: touch / mouse (arrastrar)
+function racingPointer(x){
+  if(!racing || !racing.alive) return;
+  const rect = racingCanvas.getBoundingClientRect();
+  racing.laneX = Math.min(racingCanvas.width-30, Math.max(30, x-rect.left));
+}
+racingCanvas.addEventListener('touchmove', e=>{ e.preventDefault(); racingPointer(e.touches[0].clientX); }, {passive:false});
+racingCanvas.addEventListener('touchstart', e=>{ racingPointer(e.touches[0].clientX); });
+racingCanvas.addEventListener('mousedown', e=>{ racing.dragging=true; racingPointer(e.clientX); });
+window.addEventListener('mousemove', e=>{ if(racing && racing.dragging) racingPointer(e.clientX); });
+window.addEventListener('mouseup', ()=>{ if(racing) racing.dragging=false; });
+
+/* ============================================================
+   JUEGO 2: MEMORIA LOCA
+============================================================ */
+const MEMORY_EMOJIS = ['🐶','🐱','🦁','🐸','🐵','🦄','🐷','🐼'];
+let memory;
+
+function startMemory(){
+  document.getElementById('memory-overlay').classList.remove('show');
+  const deck = shuffle([...MEMORY_EMOJIS, ...MEMORY_EMOJIS]);
+  memory = { deck, flipped:[], matched:0, moves:0, busy:false };
+  document.getElementById('memory-moves').textContent = '🔁 0 intentos';
+  document.getElementById('memory-pairs').textContent = '✅ 0/8';
+
+  const grid = document.getElementById('memory-grid');
+  grid.innerHTML='';
+  deck.forEach((emoji, idx)=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.dataset.idx = idx;
+    card.dataset.emoji = emoji;
+    card.innerHTML = `<div class="face back">❓</div><div class="face front">${emoji}</div>`;
+    card.addEventListener('click', ()=>flipCard(card));
+    grid.appendChild(card);
+  });
+}
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function flipCard(card){
+  if(memory.busy) return;
+  if(card.classList.contains('flipped') || card.classList.contains('matched')) return;
+  card.classList.add('flipped');
+  playTone(700,0.05);
+  memory.flipped.push(card);
+
+  if(memory.flipped.length===2){
+    memory.moves++;
+    document.getElementById('memory-moves').textContent = '🔁 '+memory.moves+' intentos';
+    memory.busy = true;
+    const [a,b] = memory.flipped;
+    if(a.dataset.emoji === b.dataset.emoji){
+      setTimeout(()=>{
+        a.classList.add('matched'); b.classList.add('matched');
+        memory.matched++;
+        document.getElementById('memory-pairs').textContent = '✅ '+memory.matched+'/8';
+        playTone(880,0.12);
+        memory.flipped=[]; memory.busy=false;
+        if(memory.matched===8){
+          document.getElementById('memory-final').textContent = 'Intentos: '+memory.moves;
+          document.getElementById('memory-overlay').classList.add('show');
+          confettiBurst(50);
+        }
+      },350);
+    } else {
+      setTimeout(()=>{
+        a.classList.remove('flipped'); b.classList.remove('flipped');
+        memory.flipped=[]; memory.busy=false;
+      },700);
+    }
+  }
+}
+
+/* ============================================================
+   JUEGO 3: ATRAPA DULCES
+============================================================ */
+const candyCanvas = document.getElementById('candy-canvas');
+const cCtx = candyCanvas.getContext('2d');
+let candy;
+const CANDY_EMOJIS = ['🍬','🍭','🍫','🍩','🧁','🍪'];
+
+function startCandy(){
+  document.getElementById('candy-overlay').classList.remove('show');
+  sizeCanvas(candyCanvas);
+  candy = {
+    basketX: candyCanvas.width/2,
+    basketW: 70,
+    drops: [],
+    spawnTimer: 0,
+    score: 0,
+    lives: 3,
+    speed: 2.6,
+    alive: true
+  };
+  document.getElementById('candy-score').textContent='⭐ 0';
+  updateCandyLives();
+  loops.candy && cancelAnimationFrame(loops.candy);
+  candyLoop();
+}
+function updateCandyLives(){
+  document.getElementById('candy-lives').textContent = '❤️'.repeat(candy.lives) + '🖤'.repeat(3-candy.lives);
+}
+
+function candyLoop(){
+  if(currentScreen!=='candy') return;
+  const cv=candyCanvas, ctx=cCtx, w=cv.width, h=cv.height;
+  if(!candy.alive){ loops.candy = requestAnimationFrame(candyLoop); return; }
+
+  ctx.fillStyle = '#EAF9FF';
+  ctx.fillRect(0,0,w,h);
+
+  candy.spawnTimer -= 1;
+  if(candy.spawnTimer<=0){
+    candy.spawnTimer = Math.max(22, 50 - candy.score*0.6);
+    candy.drops.push({
+      x: 24+Math.random()*(w-48), y:-20,
+      emoji: CANDY_EMOJIS[Math.floor(Math.random()*CANDY_EMOJIS.length)]
+    });
+  }
+
+  ctx.font='30px serif';
+  candy.drops.forEach(d=>{
+    d.y += candy.speed;
+    ctx.fillText(d.emoji, d.x, d.y);
+  });
+
+  // canasta
+  const basketY = h-46;
+  ctx.font='48px serif';
+  ctx.fillText('🧺', candy.basketX-candy.basketW/2, basketY+40);
+
+  // colisiones / pérdidas
+  const remain=[];
+  candy.drops.forEach(d=>{
+    const caught = d.y > basketY-6 && d.y < basketY+30 && Math.abs(d.x - candy.basketX) < candy.basketW/2;
+    if(caught){
+      candy.score++;
+      playTone(920,0.07);
+      document.getElementById('candy-score').textContent='⭐ '+candy.score;
+    } else if(d.y > h+10){
+      candy.lives--;
+      updateCandyLives();
+      playTone(200,0.15,'triangle');
+      if(candy.lives<=0){ endCandy(); }
+    } else {
+      remain.push(d);
+    }
+  });
+  candy.drops = remain;
+  candy.speed = Math.min(7, 2.6 + candy.score*0.03);
+
+  loops.candy = requestAnimationFrame(candyLoop);
+}
+
+function endCandy(){
+  candy.alive=false;
+  document.getElementById('candy-final').textContent = 'Puntaje: '+candy.score;
+  document.getElementById('candy-overlay').classList.add('show');
+}
+
+function candyPointer(x){
+  if(!candy || !candy.alive) return;
+  const rect = candyCanvas.getBoundingClientRect();
+  candy.basketX = Math.min(candyCanvas.width-10, Math.max(10, x-rect.left));
+}
+candyCanvas.addEventListener('touchmove', e=>{ e.preventDefault(); candyPointer(e.touches[0].clientX); }, {passive:false});
+candyCanvas.addEventListener('touchstart', e=>{ candyPointer(e.touches[0].clientX); });
+candyCanvas.addEventListener('mousemove', e=>{ candyPointer(e.clientX); });
+
+/* ============================================================
+   JUEGO 4: EL LABERINTO
+============================================================ */
+// 0 = camino, 1 = pared
+const MAZES = [
+[
+ [0,0,1,0,0,0,0],
+ [1,0,1,0,1,1,0],
+ [1,0,0,0,1,0,0],
+ [1,1,1,0,1,0,1],
+ [0,0,1,0,0,0,1],
+ [0,1,1,1,1,0,0],
+ [0,0,0,0,1,0,0],
+],
+[
+ [0,0,0,1,0,0,0,0],
+ [1,1,0,1,0,1,1,0],
+ [0,0,0,1,0,0,1,0],
+ [0,1,1,1,1,0,1,0],
+ [0,1,0,0,1,0,0,0],
+ [0,1,0,1,1,1,1,0],
+ [0,0,0,1,0,0,0,0],
+ [1,1,0,0,0,1,1,0],
+]
+];
+let mazeState;
+
+function startMaze(){
+  mazeState = { level: (mazeState ? mazeState.level : 0) };
+  buildMaze(mazeState.level);
+}
+
+function buildMaze(levelIdx){
+  document.getElementById('maze-overlay').classList.remove('show');
+  const layout = MAZES[levelIdx % MAZES.length];
+  const rows = layout.length, cols = layout[0].length;
+  mazeState = {
+    level: levelIdx,
+    layout, rows, cols,
+    player: {x:0,y:0},
+    goal: {x:cols-1, y:rows-1}
+  };
+  document.getElementById('maze-level').textContent = '🗺️ Nivel '+(levelIdx+1);
+  renderMaze();
+}
+
+function renderMaze(){
+  const grid = document.getElementById('maze-grid');
+  grid.style.gridTemplateColumns = `repeat(${mazeState.cols}, 26px)`;
+  grid.innerHTML='';
+  for(let y=0;y<mazeState.rows;y++){
+    for(let x=0;x<mazeState.cols;x++){
+      const cell=document.createElement('div');
+      cell.className='cell';
+      if(mazeState.layout[y][x]===1) cell.classList.add('wall');
+      if(x===mazeState.goal.x && y===mazeState.goal.y){ cell.classList.add('goal'); cell.textContent='🏆'; }
+      if(x===mazeState.player.x && y===mazeState.player.y){ cell.classList.add('player'); cell.textContent='🧒'; }
+      grid.appendChild(cell);
+    }
+  }
+}
+
+function moveMaze(dx,dy){
+  if(!mazeState) return;
+  const nx = mazeState.player.x+dx, ny = mazeState.player.y+dy;
+  if(nx<0||ny<0||nx>=mazeState.cols||ny>=mazeState.rows) return;
+  if(mazeState.layout[ny][nx]===1) return;
+  mazeState.player.x = nx; mazeState.player.y = ny;
+  playTone(600,0.05);
+  renderMaze();
+  if(nx===mazeState.goal.x && ny===mazeState.goal.y){
+    playTone(1000,0.25);
+    document.getElementById('maze-final').textContent = '¡Encontraste el tesoro en el nivel '+(mazeState.level+1)+'!';
+    document.getElementById('maze-overlay').classList.add('show');
+    confettiBurst(60);
+  }
+}
+
+function nextMazeLevel(){
+  buildMaze((mazeState.level+1) % MAZES.length);
+}
+
+// controles de teclado para el laberinto
+window.addEventListener('keydown', e=>{
+  if(currentScreen!=='maze') return;
+  if(e.key==='ArrowUp') moveMaze(0,-1);
+  if(e.key==='ArrowDown') moveMaze(0,1);
+  if(e.key==='ArrowLeft') moveMaze(-1,0);
+  if(e.key==='ArrowRight') moveMaze(1,0);
+});
+// deslizar (swipe) para el laberinto
+(function(){
+  let sx=0, sy=0;
+  const wrap = document.getElementById('maze-grid');
+  wrap.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; });
+  wrap.addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx) > Math.abs(dy)){
+      if(Math.abs(dx) > 24) moveMaze(dx>0?1:-1, 0);
+    } else {
+      if(Math.abs(dy) > 24) moveMaze(0, dy>0?1:-1);
+    }
+  });
+})();
+
+/* Tamaño inicial de canvases (por si el usuario entra directo a un juego) */
+sizeCanvas(racingCanvas); sizeCanvas(candyCanvas);
+</script>
+</body>
+</html>
